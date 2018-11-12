@@ -1,0 +1,6 @@
+# SEARCH
+youtube-dl "ytsearch3: $TEXT" -j > tmp.json
+cat tmp.json | jq '.title' 
+cat tmp.json | jq '.id' 
+# DOWNLOAD
+youtube-dl --restrict-filenames --ignore-errors -x --audio-format mp3 RgKAFK5djSk
