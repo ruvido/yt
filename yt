@@ -1,0 +1,52 @@
+#!/bin/bash
+SEARCHDIR=~/.yt/search
+if [ ! $1 ]; then
+	echo ""
+	echo "Usage:"
+	echo ""
+	echo "    yt NN SEARCH"
+	echo ""
+	echo ""
+	exit
+fi
+
+if [ $1 == "purge" ]; then
+	echo ""
+	echo Purging ... old searches
+	rm $SEARCHDIR/*.json
+	echo ""
+	exit
+fi
+
+NN=$1
+SEARCH=$2
+JSON=$SEARCHDIR/$SEARCH-$NN.json
+
+echo ""
+echo Searching ... $SEARCH
+echo ""
+
+if [ ! -d $SEARCHDIR ]; then
+	mkdir -p $SEARCHDIR
+fi
+
+if [ ! -f "$JSON" ]; then
+	youtube-dl -j "ytsearch$NN:$SEARCH" > "$JSON" 
+fi
+
+for ii in `seq 1 $NN`; do
+       echo $ii `jq '.title' "$JSON" | sed  "${ii}q;d"`
+done       
+echo ""
+printf "Download number: "
+read -r NSONG
+ID=`jq '.id' "$JSON" | sed  "${NSONG}q;d" | sed -e 's/"//g'`
+TITLE=`jq '.title' "$JSON" | sed  "${NSONG}q;d"`
+
+echo ""
+echo Downloading ... $TITLE
+
+youtube-dl --restrict-filenames --ignore-errors -x --audio-format mp3 $ID
+
+## convert titles in utf-8
+#youtube-dl 'ytsearch3:5pani2pesci' -j | jq '.title' | iconv -c -t utf-8

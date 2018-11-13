@@ -1,8 +1,0 @@
-# SEARCH
-youtube-dl "ytsearch3: $TEXT" -j > tmp.json
-cat tmp.json | jq '.title' 
-cat tmp.json | jq '.id'
-## convert titles in utf-8
-youtube-dl 'ytsearch3:5pani2pesci' -j | jq '.title' | iconv -c -t utf-8
-# DOWNLOAD
-youtube-dl --restrict-filenames --ignore-errors -x --audio-format mp3 RgKAFK5djSk
